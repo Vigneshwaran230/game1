@@ -1,0 +1,147 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="background">
+        <div id="hero"></div>
+        <div id="missiles">
+            <!-- <div class="missile1"></div> -->
+        </div>
+        
+        <div id="enemies">
+            <!-- <div class="enemy"></div>
+            <div class="enemy" style="left :100px"></div>
+            <div class="enemy" style="left :200px"></div>
+            <div class="enemy" style="left :300px"></div> -->
+        </div>
+    </div>
+    <script>
+        let hero ={
+            top: 700,
+            left: 575,
+        }
+        let missiles=[];
+        let enemies = [
+        { left: 200, top: 100 },
+        { left: 300, top: 100 },
+        { left: 400, top: 100 },
+        { left: 500, top: 100 },
+        { left: 600, top: 100 },
+        { left: 700, top: 100 },
+        { left: 800, top: 100 },
+        { left: 900, top: 100 },
+        { left: 200, top: 175 },
+        { left: 300, top: 175 },
+        { left: 400, top: 175 },
+        { left: 500, top: 175 },
+        { left: 600, top: 175 },
+        { left: 700, top: 175 },
+        { left: 800, top: 175 },
+        { left: 900, top: 175 },
+    ];
+        document.onkeydown = function moveHero(event){
+            const  leftArrow=37;
+            const rightArrow=39;
+            const space=32;
+            if (event.keyCode === leftArrow && hero.left >= 20){
+                hero.left = hero.left -10;
+                document.querySelector("#hero").style.left = hero.left; 
+            }
+                if (event.keyCode === rightArrow && hero.left<=1135){
+                hero.left = hero.left + 10;
+                document.querySelector("#hero").style.left = hero.left;
+            }
+            if (event.keyCode === space ){
+                missiles.push({left:hero.left +20 ,top :hero.top -20})
+                console.log(missiles);
+                drawMissiles();
+            }
+
+            console.log(event.keyCode);
+        }
+        // document.querySelector("#hero").style.left = hero.left + 500;
+        //first way to call the enemies
+        // function drawEnemies(){
+        //     document.querySelector("#enemies").innerHTML=`
+        //     <div class="enemy" style="left :300px"></div>`;
+        // }drawEnemies();
+
+        function drawMissiles(){
+            document.querySelector("#missiles").innerHTML ='';
+            missiles.forEach ((missile)=>{
+                document.querySelector("#missiles").innerHTML +=`
+            <div class="missile1" style="left :${missile.left}; top: ${missile.top}"></div>`;
+            }
+            )
+          
+        }
+        //for multiple enemies we mainly use foreach()
+        function drawEnemies(){
+            document.querySelector("#enemies").innerHTML ='';
+            enemies.forEach ((enemy)=>{
+                if (enemy.top <=650){
+                document.querySelector("#enemies").innerHTML +=`
+            <div class="enemy" style="left :${enemy.left}; top: ${enemy.top}"></div>`;
+            }
+        }
+            )
+          
+        }
+        function updateEnemiesPosition(){
+            enemies = enemies.map((pos)=>({left: pos.left , top : pos.top + 20}))
+            // console.log(enemies);
+         }
+         function updateMissilePosition(){
+            missiles = missiles.map((pos)=>({left: pos.left , top : pos.top - 50}))
+            
+         }
+        drawEnemies();
+        drawMissiles();
+        function checkforcollision(){
+            for (let enemy in enemies){
+                for (let missile in missiles)
+                {
+                    if (missiles[missile].left>=enemies[enemy].left && missiles[missile].left<=enemies[enemy].left + 50 && missiles[missile].top>=enemies[enemy].top &&missiles[missile].top<=enemies[enemy].top +50)
+                   { console.log("collison happened");
+                    enemies.splice(enemy,1);
+                    missiles.splice(missile,1);
+                }
+                }
+            }
+        }
+        function gameOver(){
+            if (enemies.length===0){
+                const container = document.querySelector('#background');
+                const result = document.createElement("div");
+                result.className='result';
+                result.innerText="You Win !!!";
+                container.append(result);
+            }
+            else 
+            {
+                // const container1 = document.querySelector('#background');
+                // const result = document.createElement("div");
+                // result.className='result';
+                result.innerText="You lost!!!";
+                container1.append(result);  
+            }
+        }
+        setInterval(()=>{
+            checkforcollision();
+            updateEnemiesPosition(); 
+            drawEnemies();
+            updateMissilePosition();
+            drawMissiles();
+            gameOver();
+        },1000/2)
+ 
+    </script>
+</body>
+
+</html>
